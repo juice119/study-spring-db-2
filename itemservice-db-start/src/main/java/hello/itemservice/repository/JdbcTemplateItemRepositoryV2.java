@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -28,10 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 @Repository
 public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 
-	private final JdbcTemplate template;
+	private final NamedParameterJdbcTemplate template;
 
 	public JdbcTemplateItemRepositoryV2(DataSource dataSource) {
-		this.template = new JdbcTemplate(dataSource);
+		this.template = new NamedParameterJdbcTemplate(dataSource);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 
 		try {
 			Map<String, Object> param = Map.of("id", id);
-			Item item = template.queryForObject(sql, itemRowMapper(), param);
+			Item item = template.queryForObject(sql, param, itemRowMapper());
 			return Optional.of(item);
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
@@ -96,7 +97,7 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 			sql += " price <= :maxPrice";
 		}
 		log.info("sql={}", sql);
-		return template.query(sql, itemRowMapper(), param);
+		return template.query(sql, param, itemRowMapper());
 	}
 
 	private RowMapper<Item> itemRowMapper() {
