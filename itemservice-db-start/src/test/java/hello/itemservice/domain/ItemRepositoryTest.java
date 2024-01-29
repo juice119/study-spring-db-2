@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Transactional 어노테이션은 Test 에서 실행 시 commit 하지 않고 Rollback 시킨다.
+@Transactional
 @SpringBootTest
 class ItemRepositoryTest {
 
@@ -28,6 +31,7 @@ class ItemRepositoryTest {
     PlatformTransactionManager transactionManager;
     TransactionStatus status;
 
+/*
     @BeforeEach
     void beforeEach() {
         status = transactionManager.getTransaction(new DefaultTransactionDefinition());
@@ -41,6 +45,7 @@ class ItemRepositoryTest {
         }
         transactionManager.rollback(status);
     }
+*/
 
     @Test
     void save() {
